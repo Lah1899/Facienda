@@ -1,0 +1,465 @@
+﻿<Window x:Class="Facienda.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Facienda" Height="800" Width="1280"
+        MinWidth="960" MinHeight="640"
+        Background="{DynamicResource App.Background}">
+
+    <!-- =========================================================
+         Resources (Colors, Brushes, Styles)
+         ========================================================= -->
+    <Window.Resources>
+        <!-- Palette -->
+        <Color x:Key="AccentBlue.Color">#3A7BFF</Color>
+        <Color x:Key="AccentBlueDark.Color">#2D64CC</Color>
+        <Color x:Key="SidebarBg.Color">#0F172A</Color>
+        <Color x:Key="SidebarSeparator.Color">#1F2A44</Color>
+        <Color x:Key="SurfaceBg.Color">#FFFFFF</Color>
+        <Color x:Key="SurfaceAltBg.Color">#F6F8FB</Color>
+        <Color x:Key="TextPrimary.Color">#0B1220</Color>
+        <Color x:Key="TextSecondary.Color">#5A6478</Color>
+        <Color x:Key="Border.Color">#E5E7EB</Color>
+        <Color x:Key="CardShadow.Color">#33000000</Color>
+        <Color x:Key="Done.Color">#22C55E</Color>
+        <Color x:Key="Todo.Color">#CBD5E1</Color>
+
+        <!-- Brushes -->
+        <SolidColorBrush x:Key="AccentBlue" Color="{StaticResource AccentBlue.Color}"/>
+        <SolidColorBrush x:Key="AccentBlueDark" Color="{StaticResource AccentBlueDark.Color}"/>
+        <SolidColorBrush x:Key="SidebarBg" Color="{StaticResource SidebarBg.Color}"/>
+        <SolidColorBrush x:Key="SidebarSeparator" Color="{StaticResource SidebarSeparator.Color}"/>
+        <SolidColorBrush x:Key="App.Background" Color="{StaticResource SurfaceAltBg.Color}"/>
+        <SolidColorBrush x:Key="App.Surface" Color="{StaticResource SurfaceBg.Color}"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="{StaticResource TextPrimary.Color}"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="{StaticResource TextSecondary.Color}"/>
+        <SolidColorBrush x:Key="App.Border" Color="{StaticResource Border.Color}"/>
+        <SolidColorBrush x:Key="CardShadow" Color="{StaticResource CardShadow.Color}"/>
+        <SolidColorBrush x:Key="DoneBrush" Color="{StaticResource Done.Color}"/>
+        <SolidColorBrush x:Key="TodoBrush" Color="{StaticResource Todo.Color}"/>
+
+        <!-- Typography -->
+        <Style x:Key="CaptionText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+        <Style x:Key="TitleText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+
+        <!-- Buttons -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentBlue}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource AccentBlueDark}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Sidebar Tab Item Style (ListBoxItem) -->
+        <Style x:Key="SidebarTabItem" TargetType="ListBoxItem">
+            <Setter Property="MinHeight" Value="40"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Margin" Value="6,4,6,4"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#D9E1F2"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="root" Background="{TemplateBinding Background}" CornerRadius="8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border x:Name="indicator" Grid.Column="0" Background="Transparent" CornerRadius="8,0,0,8"/>
+                                <ContentPresenter Grid.Column="1" Margin="10,0" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="root" Property="Background" Value="#1B2541"/>
+                                <Setter TargetName="indicator" Property="Background" Value="{StaticResource AccentBlue}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="root" Property="Background" Value="#162036"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Action Card -->
+        <Style x:Key="ActionCard" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource App.Surface}"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="0,8,0,8"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#66000000" BlurRadius="8" ShadowDepth="1" Opacity="0.2"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Hidden TabControl look (headers collapsed) -->
+        <Style x:Key="HiddenTabs" TargetType="TabControl">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <Border BorderBrush="{StaticResource App.Border}" BorderThickness="0" Background="Transparent">
+                            <ContentPresenter ContentSource="SelectedContent"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- =========================================================
+         Layout
+         ========================================================= -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <Grid Grid.Column="0" Background="{StaticResource SidebarBg}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Sidebar Header: App Title / Logo -->
+            <Border Background="Transparent" Padding="16,18,16,12" BorderBrush="{StaticResource SidebarSeparator}" BorderThickness="0,0,0,1">
+                <DockPanel>
+                    <!-- Simple logo: blue dot -->
+                    <Ellipse Width="10" Height="10" Fill="{StaticResource AccentBlue}" Margin="0,0,8,0"/>
+                    <TextBlock Text="Facienda" Foreground="White" FontSize="20" FontWeight="Bold"/>
+                </DockPanel>
+            </Border>
+
+            <!-- Tabs (ListBox) -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <ListBox x:Name="SidebarTabs" Background="Transparent" BorderThickness="0" Padding="6" ItemContainerStyle="{StaticResource SidebarTabItem}">
+                    <!-- Fixed tabs -->
+                    <ListBoxItem Content="All" IsSelected="True"/>
+                    <ListBoxItem Content="Rootless"/>
+                    <!-- Dummy tasks -->
+                    <Separator Margin="6,8" Background="{StaticResource SidebarSeparator}"/>
+                    <ListBoxItem Content="Task1"/>
+                    <ListBoxItem Content="Task2"/>
+                    <ListBoxItem Content="Task3"/>
+                    <ListBoxItem Content="Task4"/>
+                    <ListBoxItem Content="Task5"/>
+                </ListBox>
+            </ScrollViewer>
+
+            <!-- Sidebar Footer: Add Task + Settings -->
+            <Border Grid.Row="2" Padding="12" BorderBrush="{StaticResource SidebarSeparator}" BorderThickness="0,1,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="40"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Style="{StaticResource PrimaryButton}" Content="+ New Task" Height="36"/>
+                    <!-- Settings (gear) -->
+                    <Button Grid.Column="1" Width="36" Height="36" Background="#1B2541" BorderThickness="0" Cursor="Hand">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE713;" Foreground="#D9E1F2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Main Content -->
+        <Grid Grid.Column="1" Background="{StaticResource App.Background}">
+            <Grid.RowDefinitions>
+                <!-- Optional top stripe / toolbar placeholder (kept minimal) -->
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Content Header: Title + Add Action -->
+            <Border Grid.Row="0" Background="Transparent" Padding="20,16,20,12" BorderBrush="{StaticResource App.Border}" BorderThickness="0,0,0,1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Actions" FontSize="22" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"/>
+                    <Button Grid.Column="1" Style="{StaticResource PrimaryButton}" Content="+ New Action" Height="36"/>
+                </Grid>
+            </Border>
+
+            <!-- TabContent region (XAML-only switching via SelectedIndex binding) -->
+            <Grid Grid.Row="1">
+                <TabControl x:Name="ContentTabs" Style="{StaticResource HiddenTabs}" SelectedIndex="{Binding ElementName=SidebarTabs, Path=SelectedIndex}" Margin="20">
+                    <!-- All -->
+                    <TabItem>
+                        <TabItem.Content>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <!-- Card: TODO -->
+                                    <Border Style="{StaticResource ActionCard}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
+                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                                                <TextBlock Style="{StaticResource TitleText}" Text="Draft onboarding email template"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                    <!-- Card: DONE -->
+                                    <Border Style="{StaticResource ActionCard}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
+                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                                                <TextBlock Style="{StaticResource TitleText}" Text="Confirm server maintenance window"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                    <!-- Card: TODO -->
+                                    <Border Style="{StaticResource ActionCard}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
+                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                                                <TextBlock Style="{StaticResource TitleText}" Text="Prepare sprint review notes"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem.Content>
+                    </TabItem>
+
+                    <!-- Rootless -->
+                    <TabItem>
+                        <TabItem.Content>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <Border Style="{StaticResource ActionCard}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
+                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                                                <TextBlock Style="{StaticResource TitleText}" Text="Research shortcut keys"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                    <Border Style="{StaticResource ActionCard}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
+                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                                                <TextBlock Style="{StaticResource TitleText}" Text="Clean up outdated notes"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem.Content>
+                    </TabItem>
+
+                    <!-- Task1 -->
+                    <TabItem>
+                        <TabItem.Content>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <Border Style="{StaticResource ActionCard}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
+                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                                                <TextBlock Style="{StaticResource TitleText}" Text="Draft onboarding email template"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                    <Border Style="{StaticResource ActionCard}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
+                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                                                <TextBlock Style="{StaticResource TitleText}" Text="Validate access permissions"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem.Content>
+                    </TabItem>
+
+                    <!-- Task2 -->
+                    <TabItem>
+                        <TabItem.Content>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <Border Style="{StaticResource ActionCard}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
+                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                                                <TextBlock Style="{StaticResource TitleText}" Text="Confirm server maintenance window"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                    <Border Style="{StaticResource ActionCard}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource TodoBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
+                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                                                <TextBlock Style="{StaticResource TitleText}" Text="Draft incident postmortem outline"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem.Content>
+                    </TabItem>
+
+                    <!-- Task3 -->
+                    <TabItem>
+                        <TabItem.Content>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <Border Style="{StaticResource ActionCard}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource TodoBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
+                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                                                <TextBlock Style="{StaticResource TitleText}" Text="Prepare sprint review notes"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                    <Border Style="{StaticResource ActionCard}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource TodoBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
+                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                                                <TextBlock Style="{StaticResource TitleText}" Text="Sync roadmap with stakeholders"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem.Content>
+                    </TabItem>
+
+                    <!-- Task4 -->
+                    <TabItem>
+                        <TabItem.Content>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <Border Style="{StaticResource ActionCard}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource TodoBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
+                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                                                <TextBlock Style="{StaticResource TitleText}" Text="Review backup rotation policy"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem.Content>
+                    </TabItem>
+
+                    <!-- Task5 -->
+                    <TabItem>
+                        <TabItem.Content>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <Border Style="{StaticResource ActionCard}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource TodoBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
+                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                                                <TextBlock Style="{StaticResource TitleText}" Text="Document VPN troubleshooting"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem.Content>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
