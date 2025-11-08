@@ -11,8 +11,8 @@ namespace Facienda
 {
     internal class Root
     {
-        public List<TaskItem> Tasks { get; set; }
-        public List<ActionItem> Actions { get; set; }
+        public ObservableCollection<TaskItem> Tasks { get; set; }
+        public ObservableCollection<ActionItem> Actions { get; set; }
     }
 
     public class TaskItem : INotifyPropertyChanged
