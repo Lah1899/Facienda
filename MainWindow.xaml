@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Facienda"
         mc:Ignorable="d"
         Title="Facienda" Height="800" Width="1280"
         MinWidth="960" MinHeight="640"
@@ -135,17 +136,43 @@
             </Setter>
         </Style>
 
+        <DataTemplate x:Key="ActionCardTemplate">
+            <Border Style="{StaticResource ActionCard}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="{StaticResource TodoBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsDone}" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource DoneBrush}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="12,2,4,2">
+                        <TextBlock Style="{StaticResource TitleText}" Text="{Binding Name}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- Task Tab -->
+        <DataTemplate x:Key="TaskTabContentTemplate">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="ActionsHost"/>
+            </ScrollViewer>
+        </DataTemplate>
+
         <!-- Hidden TabControl look (headers collapsed) -->
         <Style x:Key="HiddenTabs" TargetType="TabControl">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabControl">
-                        <Border BorderBrush="{StaticResource App.Border}" BorderThickness="0" Background="Transparent">
-                            <ContentPresenter ContentSource="SelectedContent"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
         </Style>
     </Window.Resources>
 
@@ -177,17 +204,12 @@
 
             <!-- Tabs (ListBox) -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                <ListBox x:Name="SidebarTabs" Background="Transparent" BorderThickness="0" Padding="6" ItemContainerStyle="{StaticResource SidebarTabItem}">
-                    <!-- Fixed tabs -->
-                    <ListBoxItem Content="All" IsSelected="True"/>
-                    <ListBoxItem Content="Rootless"/>
-                    <!-- Dummy tasks -->
-                    <Separator Margin="6,8" Background="{StaticResource SidebarSeparator}"/>
-                    <ListBoxItem Content="Task1"/>
-                    <ListBoxItem Content="Task2"/>
-                    <ListBoxItem Content="Task3"/>
-                    <ListBoxItem Content="Task4"/>
-                    <ListBoxItem Content="Task5"/>
+                <ListBox x:Name="SidebarTabs" Background="Transparent" BorderThickness="0" Padding="6" ItemContainerStyle="{StaticResource SidebarTabItem}" ItemsSource="{Binding Tasks}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type local:TaskItem}">
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </ScrollViewer>
 
@@ -229,235 +251,27 @@
 
             <!-- TabContent region (XAML-only switching via SelectedIndex binding) -->
             <Grid Grid.Row="1">
-                <TabControl x:Name="ContentTabs" Style="{StaticResource HiddenTabs}" SelectedIndex="{Binding ElementName=SidebarTabs, Path=SelectedIndex}" Margin="20">
-                    <!-- All -->
-                    <TabItem>
-                        <TabItem.Content>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel>
-                                    <!-- Card: TODO -->
-                                    <Border Style="{StaticResource ActionCard}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
-                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
-                                                <TextBlock Style="{StaticResource TitleText}" Text="Draft onboarding email template"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <!-- Card: DONE -->
-                                    <Border Style="{StaticResource ActionCard}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
-                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
-                                                <TextBlock Style="{StaticResource TitleText}" Text="Confirm server maintenance window"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <!-- Card: TODO -->
-                                    <Border Style="{StaticResource ActionCard}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
-                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
-                                                <TextBlock Style="{StaticResource TitleText}" Text="Prepare sprint review notes"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </TabItem.Content>
-                    </TabItem>
+                <TabControl x:Name="ContentTabs"
+                    ItemsSource="{Binding Tasks}"
+                    SelectedIndex="{Binding ElementName=SidebarTabs, Path=SelectedIndex}"
+                    Style="{StaticResource HiddenTabs}"
+                    Margin="20">
 
-                    <!-- Rootless -->
-                    <TabItem>
-                        <TabItem.Content>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel>
-                                    <Border Style="{StaticResource ActionCard}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
-                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
-                                                <TextBlock Style="{StaticResource TitleText}" Text="Research shortcut keys"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <Border Style="{StaticResource ActionCard}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
-                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
-                                                <TextBlock Style="{StaticResource TitleText}" Text="Clean up outdated notes"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </TabItem.Content>
-                    </TabItem>
+                    <!-- ヘッダーだけ隠す -->
+                    <TabControl.Resources>
+                        <Style TargetType="TabItem">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Style>
+                    </TabControl.Resources>
 
-                    <!-- Task1 -->
-                    <TabItem>
-                        <TabItem.Content>
+                    <TabControl.ContentTemplate>
+                        <DataTemplate>
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel>
-                                    <Border Style="{StaticResource ActionCard}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
-                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
-                                                <TextBlock Style="{StaticResource TitleText}" Text="Draft onboarding email template"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <Border Style="{StaticResource ActionCard}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
-                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
-                                                <TextBlock Style="{StaticResource TitleText}" Text="Validate access permissions"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </StackPanel>
+                                <ItemsControl ItemsSource="{Binding Actions}"
+                              ItemTemplate="{StaticResource ActionCardTemplate}" />
                             </ScrollViewer>
-                        </TabItem.Content>
-                    </TabItem>
-
-                    <!-- Task2 -->
-                    <TabItem>
-                        <TabItem.Content>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel>
-                                    <Border Style="{StaticResource ActionCard}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Background="{StaticResource DoneBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
-                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
-                                                <TextBlock Style="{StaticResource TitleText}" Text="Confirm server maintenance window"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <Border Style="{StaticResource ActionCard}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Background="{StaticResource TodoBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
-                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
-                                                <TextBlock Style="{StaticResource TitleText}" Text="Draft incident postmortem outline"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </TabItem.Content>
-                    </TabItem>
-
-                    <!-- Task3 -->
-                    <TabItem>
-                        <TabItem.Content>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel>
-                                    <Border Style="{StaticResource ActionCard}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Background="{StaticResource TodoBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
-                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
-                                                <TextBlock Style="{StaticResource TitleText}" Text="Prepare sprint review notes"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <Border Style="{StaticResource ActionCard}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Background="{StaticResource TodoBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
-                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
-                                                <TextBlock Style="{StaticResource TitleText}" Text="Sync roadmap with stakeholders"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </TabItem.Content>
-                    </TabItem>
-
-                    <!-- Task4 -->
-                    <TabItem>
-                        <TabItem.Content>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel>
-                                    <Border Style="{StaticResource ActionCard}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Background="{StaticResource TodoBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
-                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
-                                                <TextBlock Style="{StaticResource TitleText}" Text="Review backup rotation policy"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </TabItem.Content>
-                    </TabItem>
-
-                    <!-- Task5 -->
-                    <TabItem>
-                        <TabItem.Content>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel>
-                                    <Border Style="{StaticResource ActionCard}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Background="{StaticResource TodoBrush}" CornerRadius="12,0,0,12" Margin="-12,-12,12,-12"/>
-                                            <StackPanel Grid.Column="1" Margin="12,2,4,2">
-                                                <TextBlock Style="{StaticResource TitleText}" Text="Document VPN troubleshooting"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </TabItem.Content>
-                    </TabItem>
+                        </DataTemplate>
+                    </TabControl.ContentTemplate>
                 </TabControl>
             </Grid>
         </Grid>
