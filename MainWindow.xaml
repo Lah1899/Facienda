@@ -237,7 +237,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
-                    <Button Style="{StaticResource PrimaryButton}" Content="+ New Task" Height="36"/>
+                    <Button Style="{StaticResource PrimaryButton}" Content="+ New Task" Height="36" Click="NewTask_Button_Click"/>
                     <!-- Settings (gear) -->
                     <Button Grid.Column="1" Width="36" Height="36" Background="#1B2541" BorderThickness="0" Cursor="Hand">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE713;" Foreground="#D9E1F2" HorizontalAlignment="Center" VerticalAlignment="Center"/>

@@ -65,7 +65,7 @@ namespace Facienda
         // タスクのリネーム
         private void RenameTask()
         {
-
+            
         }
 
         // アクションのリネーム
@@ -103,6 +103,26 @@ namespace Facienda
             parentTask.Actions.Remove(action);
         }
 
+        // タスクの新規作成
+        private void CreateTask(string name)
+        {
+            TaskItem newtask = new TaskItem();
+            newtask.Name = name;
+            newtask.Id = Guid.NewGuid().ToString();
+            _root.Tasks.Add(newtask);
+        }
+
+        // アクションの新規作成
+        private void CreateAction(TaskItem task, string name)
+        {
+            ActionItem newaction = new ActionItem();
+            newaction.Name = name;
+            newaction.Id = Guid.NewGuid().ToString();
+            _root.Actions.Add(newaction);
+            task.Actions.Add(newaction);
+        }
+
+        // 以降はイベント処理
         private void TaskDelete_Click(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
@@ -121,6 +141,11 @@ namespace Facienda
             var action = (ActionItem)card.DataContext;
 
             DeleteAction(action);
+        }
+
+        private void NewTask_Button_Click(object sender, RoutedEventArgs e)
+        {
+            CreateTask("Task Name ?");
         }
     }
 }
