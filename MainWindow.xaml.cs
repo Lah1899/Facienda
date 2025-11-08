@@ -26,23 +26,7 @@ namespace Facienda
         public MainWindow()
         {
             InitializeComponent();
-            // _root = LoadJson();
-            _root = new Root {
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Id = "1", Name = "ダミー1", DueDate = "2025-01-01", Note = "テスト" },
-                    new TaskItem { Id = "2", Name = "ダミー2", DueDate = "2025-01-01", Note = "テスト" }
-                },
-                Actions = new List<ActionItem>
-                {
-                    new ActionItem { Id = "a1", Name = "ダミー1のアクション1", IsDone = false, TaskId = "1" },
-                    new ActionItem { Id = "a2", Name = "ダミー1のアクション2", IsDone = true,  TaskId = "1" },
-                    new ActionItem { Id = "a3", Name = "ダミー2のアクション1", IsDone = false, TaskId = "2" }
-                },
-            };
-            _root.Tasks[0].Actions.Add(_root.Actions[0]); // テスト用のダミー処理
-            _root.Tasks[0].Actions.Add(_root.Actions[1]); // テスト用のダミー処理
-            _root.Tasks[1].Actions.Add(_root.Actions[2]); // テスト用のダミー処理
+            LoadJson();
             DataContext = _root;
             SidebarTabs.SelectedIndex = 0;
             ContentTabs.SelectedIndex = 0;
@@ -73,9 +57,9 @@ namespace Facienda
         }
 
         // アクションカードの完了ステータス反転
-        private void ToggleActionStatus()
+        private void ToggleActionStatus(ActionItem action)
         {
-
+            action.IsDone = !action.IsDone;
         }
 
         // タスクのリネーム
@@ -97,46 +81,46 @@ namespace Facienda
         }
 
         // タスクの削除
-        private void DeleteTask()
+        private void DeleteTask(TaskItem task)
         {
-
+            // 配下のアクションを削除
+            var target = task.Actions.ToList();
+            foreach(ActionItem action in target)
+            {
+                DeleteAction(action);
+            }
+            // Rootのリストから削除
+            _root.Tasks.Remove(task);
         }
 
         // アクションの削除
-        private void DeleteAction()
+        private void DeleteAction(ActionItem action)
         {
-
+            // Rootのリストから削除
+            _root.Actions.Remove(action);
+            // 親タスクのリストから削除
+            var parentTask = _root.Tasks.FirstOrDefault(t => t.Id == action.TaskId);
+            parentTask.Actions.Remove(action);
         }
 
-        /*
-        // タスクタブの追加
-        private System.Windows.Controls.StackPanel AddTaskTab(TaskItem task)
+        private void TaskDelete_Click(object sender, RoutedEventArgs e)
         {
-            // 左メニューにタスクを追加
-            // TaskItemオブジェクトを画面項目のDataContextとしてセット
-            var item = new System.Windows.Controls.ListBoxItem { Content = task.Name };
-            item.DataContext = task;
-            SidebarTabs.Items.Add(item);
+            var menuItem = sender as MenuItem;
+            var ctxMenu = menuItem.Parent as ContextMenu;
+            var listBoxItem = ctxMenu.PlacementTarget as FrameworkElement;
+            var task = listBoxItem.DataContext as TaskItem;
 
-            // テンプレートからタブ内容を生成
-            var template = (System.Windows.DataTemplate)this.FindResource("TaskTabContentTemplate");
-            var content = (System.Windows.FrameworkElement)template.LoadContent();
-            var scroll = (System.Windows.Controls.ScrollViewer)content;
-            var actionsHost = (System.Windows.Controls.StackPanel)scroll.Content;
-            var tab = new System.Windows.Controls.TabItem { Content = content };
-            ContentTabs.Items.Add(tab);
-
-            return actionsHost;
+            DeleteTask(task);
         }
 
-        // アクションカードの追加
-        private void AddActionCard(System.Windows.Controls.StackPanel panel, ActionItem action)
+        private void ActionDelete_Click(object sender, RoutedEventArgs e)
         {
-            var template = (System.Windows.DataTemplate)this.FindResource("ActionCardTemplate");
-            var content = (System.Windows.FrameworkElement)template.LoadContent();
-            content.DataContext = action;
-            panel.Children.Add(content);
+            var menuItem = (System.Windows.Controls.MenuItem)sender;
+            var contextMenu = (System.Windows.Controls.ContextMenu)menuItem.Parent;
+            var card = (FrameworkElement)contextMenu.PlacementTarget;
+            var action = (ActionItem)card.DataContext;
+
+            DeleteAction(action);
         }
-        */
     }
 }

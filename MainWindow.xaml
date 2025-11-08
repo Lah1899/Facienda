@@ -138,6 +138,11 @@
 
         <DataTemplate x:Key="ActionCardTemplate">
             <Border Style="{StaticResource ActionCard}">
+                <Border.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Delete" Click="ActionDelete_Click" />
+                    </ContextMenu>
+                </Border.ContextMenu>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="6"/>
@@ -174,6 +179,18 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
         </Style>
+
+        <!-- TabItem with Menu -->
+        <ContextMenu x:Key="TaskItemContextMenu">
+            <MenuItem Header="Delete" Click="TaskDelete_Click" />
+        </ContextMenu>
+
+        <Style x:Key="SidebarTabItemWithMenu"
+            TargetType="ListBoxItem"
+            BasedOn="{StaticResource SidebarTabItem}">
+            <Setter Property="ContextMenu" Value="{StaticResource TaskItemContextMenu}" />
+        </Style>
+        
     </Window.Resources>
 
     <!-- =========================================================
@@ -204,7 +221,7 @@
 
             <!-- Tabs (ListBox) -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                <ListBox x:Name="SidebarTabs" Background="Transparent" BorderThickness="0" Padding="6" ItemContainerStyle="{StaticResource SidebarTabItem}" ItemsSource="{Binding Tasks}">
+                <ListBox x:Name="SidebarTabs" Background="Transparent" BorderThickness="0" Padding="6" ItemsSource="{Binding Tasks}" ItemContainerStyle="{StaticResource SidebarTabItemWithMenu}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:TaskItem}">
                             <TextBlock Text="{Binding Name}" />
