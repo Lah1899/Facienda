@@ -221,7 +221,9 @@
 
             <!-- Tabs (ListBox) -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                <ListBox x:Name="SidebarTabs" Background="Transparent" BorderThickness="0" Padding="6" ItemsSource="{Binding Tasks}" ItemContainerStyle="{StaticResource SidebarTabItemWithMenu}">
+                <ListBox x:Name="SidebarTabs" Background="Transparent" BorderThickness="0" Padding="6" ItemsSource="{Binding Tasks}"
+                         ItemContainerStyle="{StaticResource SidebarTabItemWithMenu}"
+                         MouseDoubleClick="SidebarTabs_DoubleClick">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:TaskItem}">
                             <TextBlock Text="{Binding Name}" />

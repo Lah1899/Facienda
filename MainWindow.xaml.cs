@@ -62,10 +62,18 @@ namespace Facienda
             action.IsDone = !action.IsDone;
         }
 
-        // タスクのリネーム
-        private void RenameTask()
+        // タスク編集ウィンドウの起動
+        private void OpenTaskWindow(TaskItem task)
         {
-            
+            var dlg = new TaskDetailWindow(task);
+            dlg.owner = this;
+            dlg.ShowDialog();
+        }
+
+        // タスクのリネーム
+        public void RenameTask(TaskItem task, string name)
+        {
+            task.Name = name;
         }
 
         // アクションのリネーム
@@ -153,6 +161,12 @@ namespace Facienda
         {
             TaskItem task = SidebarTabs.SelectedItem as TaskItem;
             CreateAction(task, "Action Name ?");
+        }
+
+        private void SidebarTabs_DoubleClick(object sender, RoutedEventArgs e)
+        {
+            TaskItem task = SidebarTabs.SelectedItem as TaskItem;
+            OpenTaskWindow(task);
         }
     }
 }
