@@ -118,6 +118,7 @@ namespace Facienda
             ActionItem newaction = new ActionItem();
             newaction.Name = name;
             newaction.Id = Guid.NewGuid().ToString();
+            newaction.TaskId = task.Id;
             _root.Actions.Add(newaction);
             task.Actions.Add(newaction);
         }
@@ -146,6 +147,12 @@ namespace Facienda
         private void NewTask_Button_Click(object sender, RoutedEventArgs e)
         {
             CreateTask("Task Name ?");
+        }
+
+        private void NewAction_Button_Click(object sender, RoutedEventArgs e)
+        {
+            TaskItem task = SidebarTabs.SelectedItem as TaskItem;
+            CreateAction(task, "Action Name ?");
         }
     }
 }
