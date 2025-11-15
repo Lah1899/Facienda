@@ -26,11 +26,11 @@ namespace Facienda
         public MainWindow()
         {
             InitializeComponent();
+            File.Copy("facienda.json", "facienda_bk.json", true); // Jsonのバックアップ
             LoadJson();
             DataContext = _root;
             SidebarTabs.SelectedIndex = 0;
             ContentTabs.SelectedIndex = 0;
-            // MessageBox.Show(this, _root.Tasks[1].Name);
         }
 
         // Jsonからのデータ読み込み
@@ -38,9 +38,10 @@ namespace Facienda
         {
             var json = File.ReadAllText("facienda.json");
             _root = JsonConvert.DeserializeObject<Root>(json);
-            foreach (ActionItem action in _root.Actions)
+            foreach (TaskItem task in _root.Tasks) 
             {
-                foreach (TaskItem task in _root.Tasks)
+                task.Actions.Clear(); // タスク配下のアクションを一度クリア
+                foreach (ActionItem action in _root.Actions)
                 {
                     if(task.Id == action.TaskId)
                     {
@@ -53,13 +54,16 @@ namespace Facienda
         // Jsonへのデータ保存
         private void SaveJson()
         {
-
+            var json = JsonConvert.SerializeObject(_root, Formatting.Indented);
+            File.WriteAllText("facienda.json", json);
         }
 
         // アクションカードの完了ステータス反転
         private void ToggleActionStatus(ActionItem action)
         {
             action.IsDone = !action.IsDone;
+
+            SaveJson();
         }
 
         // タスク編集ウィンドウの起動
@@ -82,12 +86,16 @@ namespace Facienda
         public void RenameTask(TaskItem task, string name)
         {
             task.Name = name;
+
+            SaveJson();
         }
 
         // アクションのリネーム
         public void RenameAction(ActionItem action, string name)
         {
             action.Name = name;
+
+            SaveJson();
         }
 
         // 完了アクションのクリア
@@ -101,6 +109,8 @@ namespace Facienda
                     DeleteAction(action);
                 }
             }
+
+            SaveJson();
         }
 
         // タスクの削除
@@ -114,6 +124,8 @@ namespace Facienda
             }
             // Rootのリストから削除
             _root.Tasks.Remove(task);
+
+            SaveJson();
         }
 
         // アクションの削除
@@ -124,6 +136,8 @@ namespace Facienda
             // 親タスクのリストから削除
             var parentTask = _root.Tasks.FirstOrDefault(t => t.Id == action.TaskId);
             parentTask.Actions.Remove(action);
+
+            SaveJson();
         }
 
         // タスクの新規作成
@@ -133,6 +147,8 @@ namespace Facienda
             newtask.Name = name;
             newtask.Id = Guid.NewGuid().ToString();
             _root.Tasks.Add(newtask);
+
+            SaveJson();
 
             // タスク作成直後に命名をさせる
             OpenTaskWindow(newtask);
@@ -147,6 +163,8 @@ namespace Facienda
             newaction.TaskId = task.Id;
             _root.Actions.Add(newaction);
             task.Actions.Add(newaction);
+
+            SaveJson();
 
             // アクション作成直後に命名をさせる
             OpenActionWindow(newaction);
