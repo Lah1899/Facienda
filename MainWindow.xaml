@@ -265,7 +265,8 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Actions" FontSize="22" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"/>
+                    <TextBlock FontSize="22" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"
+                               Text="{Binding ElementName=SidebarTabs, Path=SelectedItem.Name}"/>
                     <Button Style="{StaticResource PrimaryButton}" Content="+ New Action" Height="36" Grid.ColumnSpan="2" Margin="905,0,0,0" VerticalAlignment="Top" Click="NewAction_Button_Click"/>
                 </Grid>
             </Border>
