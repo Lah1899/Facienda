@@ -267,7 +267,8 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock FontSize="22" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"
                                Text="{Binding ElementName=SidebarTabs, Path=SelectedItem.Name}"/>
-                    <Button Style="{StaticResource PrimaryButton}" Content="+ New Action" Height="36" Grid.ColumnSpan="2" Margin="905,0,0,0" VerticalAlignment="Top" Click="NewAction_Button_Click"/>
+                    <Button Style="{StaticResource PrimaryButton}" Content="Clear Actions" Height="36" Grid.ColumnSpan="2" Margin="420,0,120,0" VerticalAlignment="Top" Click="ClearActions_Button_Click"/>
+                    <Button Style="{StaticResource PrimaryButton}" Content="+ New Action" Height="36" Grid.ColumnSpan="2" Margin="550,0,0,0" VerticalAlignment="Top" Click="NewAction_Button_Click"/>
                 </Grid>
             </Border>
 

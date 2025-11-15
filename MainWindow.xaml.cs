@@ -91,9 +91,16 @@ namespace Facienda
         }
 
         // 完了アクションのクリア
-        private void ClearActions()
+        private void ClearActions(TaskItem task)
         {
-
+            var target = task.Actions.ToList();
+            foreach(ActionItem action in target)
+            {
+                if (action.IsDone)
+                {
+                    DeleteAction(action);
+                }
+            }
         }
 
         // タスクの削除
@@ -193,6 +200,12 @@ namespace Facienda
         {
             TaskItem task = SidebarTabs.SelectedItem as TaskItem;
             CreateAction(task, "Action Name ?");
+        }
+
+        private void ClearActions_Button_Click(Object sender, RoutedEventArgs e)
+        {
+            TaskItem task = SidebarTabs.SelectedItem as TaskItem;
+            ClearActions(task);
         }
 
         private void SidebarTabs_DoubleClick(object sender, RoutedEventArgs e)
