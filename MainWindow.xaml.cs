@@ -126,6 +126,9 @@ namespace Facienda
             newtask.Name = name;
             newtask.Id = Guid.NewGuid().ToString();
             _root.Tasks.Add(newtask);
+
+            // タスク作成直後に命名をさせる
+            OpenTaskWindow(newtask);
         }
 
         // アクションの新規作成
@@ -137,6 +140,9 @@ namespace Facienda
             newaction.TaskId = task.Id;
             _root.Actions.Add(newaction);
             task.Actions.Add(newaction);
+
+            // アクション作成直後に命名をさせる
+            OpenActionWindow(newaction);
         }
 
         // 以降はイベント処理
