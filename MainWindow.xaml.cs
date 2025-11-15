@@ -70,6 +70,14 @@ namespace Facienda
             dlg.ShowDialog();
         }
 
+        // アクション編集ウィンドウの起動
+        private void OpenActionWindow(ActionItem action)
+        {
+            var dlg = new ActionDetailWindow(action);
+            dlg.owner = this;
+            dlg.ShowDialog();
+        }
+
         // タスクのリネーム
         public void RenameTask(TaskItem task, string name)
         {
@@ -77,9 +85,9 @@ namespace Facienda
         }
 
         // アクションのリネーム
-        private void RenameAction()
+        public void RenameAction(ActionItem action, string name)
         {
-
+            action.Name = name;
         }
 
         // 完了アクションのクリア
@@ -142,6 +150,16 @@ namespace Facienda
             DeleteTask(task);
         }
 
+        private void ActionRename_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (System.Windows.Controls.MenuItem)sender;
+            var contextMenu = (System.Windows.Controls.ContextMenu)menuItem.Parent;
+            var card = (FrameworkElement)contextMenu.PlacementTarget;
+            var action = (ActionItem)card.DataContext;
+
+            OpenActionWindow(action);
+        }
+
         private void ActionDelete_Click(object sender, RoutedEventArgs e)
         {
             var menuItem = (System.Windows.Controls.MenuItem)sender;
@@ -150,6 +168,14 @@ namespace Facienda
             var action = (ActionItem)card.DataContext;
 
             DeleteAction(action);
+        }
+
+        private void ActionCard_Click(object sender, RoutedEventArgs e)
+        {
+            var card = (FrameworkElement)sender;
+            var action = (ActionItem)card.DataContext;
+
+            ToggleActionStatus(action);
         }
 
         private void NewTask_Button_Click(object sender, RoutedEventArgs e)

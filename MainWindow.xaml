@@ -137,9 +137,11 @@
         </Style>
 
         <DataTemplate x:Key="ActionCardTemplate">
-            <Border Style="{StaticResource ActionCard}">
+            <Border Style="{StaticResource ActionCard}"
+                    MouseLeftButtonDown="ActionCard_Click">
                 <Border.ContextMenu>
                     <ContextMenu>
+                        <MenuItem Header="Rename" Click="ActionRename_Click" />
                         <MenuItem Header="Delete" Click="ActionDelete_Click" />
                     </ContextMenu>
                 </Border.ContextMenu>
