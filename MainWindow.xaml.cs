@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Newtonsoft.Json;
 using System.IO;
+using System.Collections.ObjectModel;
 
 namespace Facienda
 {
@@ -23,10 +24,17 @@ namespace Facienda
     public partial class MainWindow : Window
     {
         private Root _root; // 全データを格納するオブジェクト
+        private const string JSON_FN = "facienda.json"; // データ保存用JSON
+        private const string JSON_BK_FN = "facienda_bk.json"; // アプリ起動時に作成されるバックアップ
+
         public MainWindow()
         {
             InitializeComponent();
-            File.Copy("facienda.json", "facienda_bk.json", true); // Jsonのバックアップ
+            if (!File.Exists(JSON_FN))
+            {
+                File.Create(JSON_FN).Close(); // Jsonがなければ作成
+            }
+            File.Copy(JSON_FN, JSON_BK_FN, true); // Jsonのバックアップ
             LoadJson();
             DataContext = _root;
             SidebarTabs.SelectedIndex = 0;
@@ -38,6 +46,13 @@ namespace Facienda
         {
             var json = File.ReadAllText("facienda.json");
             _root = JsonConvert.DeserializeObject<Root>(json);
+
+            // _rootがNullの場合は初期化しておく
+            if(_root == null) { _root = new Root(); }
+            if(_root.Tasks == null) { _root.Tasks = new ObservableCollection<TaskItem>(); }
+            if(_root.Actions == null) { _root.Actions = new ObservableCollection<ActionItem>(); }
+
+            // アクションをタスクに所属させる
             foreach (TaskItem task in _root.Tasks) 
             {
                 task.Actions.Clear(); // タスク配下のアクションを一度クリア
@@ -69,6 +84,7 @@ namespace Facienda
         // タスク編集ウィンドウの起動
         private void OpenTaskWindow(TaskItem task)
         {
+            if (task == null) { return; } // タスクが指定されていない場合は処理を終了する
             var dlg = new TaskDetailWindow(task);
             dlg.owner = this;
             dlg.ShowDialog();
@@ -101,6 +117,7 @@ namespace Facienda
         // 完了アクションのクリア
         private void ClearActions(TaskItem task)
         {
+            if(task == null) { return; } // タスクが指定されていない場合は処理を終了する
             var target = task.Actions.ToList();
             foreach(ActionItem action in target)
             {
@@ -157,6 +174,12 @@ namespace Facienda
         // アクションの新規作成
         private void CreateAction(TaskItem task, string name)
         {
+            if(task == null)
+            {
+                // タスクが指定されていない場合は処理を終了する
+                MessageBox.Show("Select a task before addind actions.");
+                return;
+            }
             ActionItem newaction = new ActionItem();
             newaction.Name = name;
             newaction.Id = Guid.NewGuid().ToString();
