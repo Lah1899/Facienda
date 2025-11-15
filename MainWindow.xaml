@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Facienda"
         mc:Ignorable="d"
-        Title="Facienda" Height="640" Width="960"
+        Title="Facienda 1.0.0" Height="640" Width="960"
         MinWidth="960" MinHeight="640"
-        Background="{DynamicResource App.Background}">
+        Background="{DynamicResource App.Background}"
+        Icon="icon.ico">
 
     <!-- =========================================================
          Resources (Colors, Brushes, Styles)
