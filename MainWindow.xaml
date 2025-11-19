@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Facienda"
         mc:Ignorable="d"
-        Title="Facienda 1.0.0" Height="640" Width="960"
+        Title="Facienda 1.0.1" Height="640" Width="960"
         MinWidth="960" MinHeight="640"
         Background="{DynamicResource App.Background}"
         Icon="icon.ico">
@@ -185,6 +185,7 @@
 
         <!-- TabItem with Menu -->
         <ContextMenu x:Key="TaskItemContextMenu">
+            <MenuItem Header="Rename" Click="TaskRename_Click" />
             <MenuItem Header="Delete" Click="TaskDelete_Click" />
         </ContextMenu>
 
@@ -242,7 +243,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
-                    <Button Style="{StaticResource PrimaryButton}" Content="+ New Task" Height="36" Click="NewTask_Button_Click"/>
+                    <Button Style="{StaticResource PrimaryButton}" Content="+ Task" FontSize="14" Height="36" Click="NewTask_Button_Click"/>
                     <!-- Settings (gear) -->
                     <Button Grid.Column="1" Width="36" Height="36" Background="#1B2541" BorderThickness="0" Cursor="Hand">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE713;" Foreground="#D9E1F2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -268,8 +269,14 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock FontSize="22" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"
                                Text="{Binding ElementName=SidebarTabs, Path=SelectedItem.Name}"/>
-                    <Button Style="{StaticResource PrimaryButton}" Content="Clear Actions" Height="36" Grid.ColumnSpan="2" Margin="420,0,120,0" VerticalAlignment="Top" Click="ClearActions_Button_Click"/>
-                    <Button Style="{StaticResource PrimaryButton}" Content="+ New Action" Height="36" Grid.ColumnSpan="2" Margin="550,0,0,0" VerticalAlignment="Top" Click="NewAction_Button_Click"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource PrimaryButton}" Content="Clear" FontSize="14"
+                                Height="36" Width="80" Margin="0,0,8,0"
+                                Click="ClearActions_Button_Click"/>
+                        <Button Style="{StaticResource PrimaryButton}" Content="+ Action" FontSize="14"
+                                Height="36" Width="80"
+                                Click="NewAction_Button_Click"/>
+                    </StackPanel>
                 </Grid>
             </Border>
 

@@ -194,6 +194,16 @@ namespace Facienda
         }
 
         // 以降はイベント処理
+        private void TaskRename_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            var ctxMenu = menuItem.Parent as ContextMenu;
+            var listBoxItem = ctxMenu.PlacementTarget as FrameworkElement;
+            var task = listBoxItem.DataContext as TaskItem;
+
+            OpenTaskWindow(task);
+        }
+
         private void TaskDelete_Click(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
