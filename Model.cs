@@ -13,6 +13,7 @@ namespace Facienda
     {
         public ObservableCollection<TaskItem> Tasks { get; set; }
         public ObservableCollection<ActionItem> Actions { get; set; }
+        public Settings Settings { get; set; }
     }
 
     public class TaskItem : INotifyPropertyChanged
@@ -127,5 +128,11 @@ namespace Facienda
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+
+    public class Settings
+    {
+        public double Width { get; set; }
+        public double Height { get; set; }
     }
 }

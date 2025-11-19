@@ -37,6 +37,8 @@ namespace Facienda
             File.Copy(JSON_FN, JSON_BK_FN, true); // Jsonのバックアップ
             LoadJson();
             DataContext = _root;
+            Width = _root.Settings.Width; // ウィンドウ幅の設定
+            Height = _root.Settings.Height; // ウィンドウ高さの設定
             SidebarTabs.SelectedIndex = 0;
             ContentTabs.SelectedIndex = 0;
         }
@@ -51,6 +53,7 @@ namespace Facienda
             if(_root == null) { _root = new Root(); }
             if(_root.Tasks == null) { _root.Tasks = new ObservableCollection<TaskItem>(); }
             if(_root.Actions == null) { _root.Actions = new ObservableCollection<ActionItem>(); }
+            if(_root.Settings == null) { _root.Settings = new Settings() { Width = 960, Height = 640}; }
 
             // アクションをタスクに所属させる
             foreach (TaskItem task in _root.Tasks) 
@@ -263,6 +266,13 @@ namespace Facienda
         {
             TaskItem task = SidebarTabs.SelectedItem as TaskItem;
             OpenTaskWindow(task);
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            _root.Settings.Width = Width;
+            _root.Settings.Height = Height;
+            SaveJson();
         }
     }
 }
