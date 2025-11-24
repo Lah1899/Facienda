@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using Newtonsoft.Json;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace Facienda
 {
@@ -180,7 +181,7 @@ namespace Facienda
             if(task == null)
             {
                 // タスクが指定されていない場合は処理を終了する
-                MessageBox.Show("Select a task before addind actions.");
+                MessageBox.Show("Select a task before adding actions.");
                 return;
             }
             ActionItem newaction = new ActionItem();
