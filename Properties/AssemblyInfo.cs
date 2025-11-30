@@ -49,4 +49,4 @@ using System.Windows;
 //      リビジョン
 //
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.3")]
+[assembly: AssemblyFileVersion("1.0.4")]

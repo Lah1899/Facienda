@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Facienda"
         mc:Ignorable="d"
-        Title="Action Name ?" Width="280" SizeToContent="Height">
+        Title="Action Name ?" Width="280" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner">
     <StackPanel Margin="10">
         <TextBox x:Name="InputBox"
              FontSize="16"

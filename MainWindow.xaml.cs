@@ -91,6 +91,7 @@ namespace Facienda
             if (task == null) { return; } // タスクが指定されていない場合は処理を終了する
             var dlg = new TaskDetailWindow(task);
             dlg.owner = this;
+            dlg.Owner = this; // メインウィンドウ中央に出すため
             dlg.ShowDialog();
         }
 
@@ -99,6 +100,7 @@ namespace Facienda
         {
             var dlg = new ActionDetailWindow(action);
             dlg.owner = this;
+            dlg.Owner = this; // メインウィンドウ中央に出すため
             dlg.ShowDialog();
         }
 
